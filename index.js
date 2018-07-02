@@ -148,7 +148,7 @@ const getDataFromUrlAndSave = async url => {
                 [rows, fields] = await connection.execute('select id from category where title=?', [category.title]);
                 var categoryId = parseInt(rows[0].id);
 
-                [rows, fields] = await connection.execute('select * from product where title=? and featured=false', [product.title]);
+                [rows, fields] = await connection.execute('select * from product where title=?', [product.title]);
 
                 if (rows.length == 0) {
                     await connection.query("insert into product (title, representation, description, body, logoUrl, posterUrl, webUrl, categoryId, queue, alias) values (?, ?, ? ,? ,?, ?, ?, ?, ?, ?)", [product.title, product.representation, product.desc, product.body, product.logoUrl, product.posterUrl, product.webUrl, categoryId, product.queue, product.alias]);
