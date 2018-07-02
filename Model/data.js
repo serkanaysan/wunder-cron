@@ -8,6 +8,7 @@ function Category() {
     this.url;
     this.products = new Array();
     this.queue;
+    this.alias;
 }
 
 function Product(){
@@ -20,6 +21,7 @@ function Product(){
     this.logoUrl;
     this.posterUrl;
     this.queue;
+    this.alias;
 }
 
 function FeaturedResources(){
