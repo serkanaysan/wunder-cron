@@ -32,7 +32,7 @@ const getDataFromUrlAndSave = async url => {
             categoryDM.title = category.getElementsByTagName('a').item(0).title;
             categoryDM.url = category.getElementsByTagName('a').item(0).href;
             categoryDM.queue = i;
-            categoryDM.alias = categoryDM.title.toString().toLowerCase().replace(/ /g, '');
+            categoryDM.alias = categoryDM.title.toString().toLowerCase().replace(/ /g, '').replace(/./g, '');
             return categoryDM
         });
 
@@ -75,7 +75,7 @@ const getDataFromUrlAndSave = async url => {
                 productDM.url = product.getElementsByClassName('company-listing-body').item(0).getElementsByClassName('company-listing-more').item(0).getElementsByTagName('a').item(0).href;
                 productDM.logoUrl = product.getElementsByClassName('company-listing-image').item(0).getElementsByTagName('a').item(0).getElementsByTagName('img').item(0).src;
                 productDM.queue = i;
-                productDM.alias = productDM.title.toString().toLowerCase().replace(/ /g, '');
+                productDM.alias = productDM.title.toString().toLowerCase().replace(/ /g, '').replace(/./g, '');
                 
                 const responseProduct = await axios.get(productDM.url).catch(err => {
                     console.log(err);
@@ -85,7 +85,7 @@ const getDataFromUrlAndSave = async url => {
                 const { document } = (new JSDOM(dataProduct)).window;
 
                 productDM.representation = document.getElementsByClassName('company-page-representation').item(0).textContent;
-                productDM.posterUrl = document.getElementById('company-page-photo').getElementsByClassName('opacity').item(0).style.backgroundImage.replace('url("', "").replace('")', "");
+                productDM.posterUrl = document.getElementById('company-page-photo').getElementsByClassName('opacity').item(0).style.backgroundImage.replace(/url\(\"/g, "").replace(/\")/g, "");
 
                 const bodyParagraph = Array.from(document.getElementsByClassName('company-page-body').item(0).getElementsByTagName('p'));
                 productDM.body = "";
