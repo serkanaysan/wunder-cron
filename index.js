@@ -129,10 +129,10 @@ const getDataFromUrlAndSave = async url => {
             var [rows, fields] = await connection.execute('select * from category where title=?', [category.title]);
 
             if (rows.length == 0) {
-                await connection.query("insert into category (title, queue) values (?, ?)", [category.title, category.queue]);
+                await connection.query("insert into category (title, queue, alias) values (?, ?, ?)", [category.title, category.queue, category.alias]);
             }
             else {
-                await connection.query("update category set queue=? where title=?", [category.queue, category.title]);
+                await connection.query("update category set queue=?, alias=? where title=?", [category.queue, category.alias, category.title]);
             }
 
             const databaseProductPromise = category.products.map(async product => {
@@ -142,10 +142,10 @@ const getDataFromUrlAndSave = async url => {
                 [rows, fields] = await connection.execute('select * from product where title=?', [product.title]);
 
                 if (rows.length == 0) {
-                    await connection.query("insert into product (title, representation, description, body, logoUrl, posterUrl, webUrl, categoryId, queue) values (?, ?, ? ,? ,?, ?, ?, ?, ?)", [product.title, product.representation, product.desc, product.body, product.logoUrl, product.posterUrl, product.webUrl, categoryId, product.queue]);
+                    await connection.query("insert into product (title, representation, description, body, logoUrl, posterUrl, webUrl, categoryId, queue, alias) values (?, ?, ? ,? ,?, ?, ?, ?, ?, ?)", [product.title, product.representation, product.desc, product.body, product.logoUrl, product.posterUrl, product.webUrl, categoryId, product.queue, product.alias]);
                 }
                 else {
-                    await connection.query("update product set representation=?, description=?, body=?, logoUrl=?, posterUrl=?, webUrl=?, categoryId=?, queue=? where title=?", [product.representation, product.desc, product.body, product.logoUrl, product.posterUrl, product.webUrl, categoryId, product.queue, product.title]);
+                    await connection.query("update product set representation=?, description=?, body=?, logoUrl=?, posterUrl=?, webUrl=?, categoryId=?, queue=?, product=? where title=?", [product.representation, product.desc, product.body, product.logoUrl, product.posterUrl, product.webUrl, categoryId, product.queue, product.alias, product.title]);
                 }
 
                 return rows
