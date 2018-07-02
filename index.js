@@ -145,7 +145,7 @@ const getDataFromUrlAndSave = async url => {
                     await connection.query("insert into product (title, representation, description, body, logoUrl, posterUrl, webUrl, categoryId, queue, alias) values (?, ?, ? ,? ,?, ?, ?, ?, ?, ?)", [product.title, product.representation, product.desc, product.body, product.logoUrl, product.posterUrl, product.webUrl, categoryId, product.queue, product.alias]);
                 }
                 else {
-                    await connection.query("update product set representation=?, description=?, body=?, logoUrl=?, posterUrl=?, webUrl=?, categoryId=?, queue=?, product=? where title=?", [product.representation, product.desc, product.body, product.logoUrl, product.posterUrl, product.webUrl, categoryId, product.queue, product.alias, product.title]);
+                    await connection.query("update product set representation=?, description=?, body=?, logoUrl=?, posterUrl=?, webUrl=?, categoryId=?, queue=?, alias=? where title=?", [product.representation, product.desc, product.body, product.logoUrl, product.posterUrl, product.webUrl, categoryId, product.queue, product.alias, product.title]);
                 }
 
                 return rows
