@@ -85,7 +85,7 @@ const getDataFromUrlAndSave = async url => {
                 const { document } = (new JSDOM(dataProduct)).window;
 
                 productDM.representation = document.getElementsByClassName('company-page-representation').item(0).textContent;
-                productDM.posterUrl = document.getElementById('company-page-photo').getElementsByClassName('opacity').item(0).style.backgroundImage.replace(/url\(\"/g, "").replace(/\")/g, "");
+                productDM.posterUrl = document.getElementById('company-page-photo').getElementsByClassName('opacity').item(0).style.backgroundImage.replace(/url(\"/g, "").replace(/\")/g, "");
 
                 const bodyParagraph = Array.from(document.getElementsByClassName('company-page-body').item(0).getElementsByTagName('p'));
                 productDM.body = "";
