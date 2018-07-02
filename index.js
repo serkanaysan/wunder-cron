@@ -32,7 +32,7 @@ const getDataFromUrlAndSave = async url => {
             categoryDM.title = category.getElementsByTagName('a').item(0).title;
             categoryDM.url = category.getElementsByTagName('a').item(0).href;
             categoryDM.queue = i;
-            categoryDM.alias = categoryDM.title.toString().toLowerCase().replace(/ /g, '').replace(/./g, '');
+            categoryDM.alias = categoryDM.title.toString().toLowerCase().replace(/ /g, '').replace(".", "-");
             return categoryDM
         });
 
@@ -75,7 +75,7 @@ const getDataFromUrlAndSave = async url => {
                 productDM.url = product.getElementsByClassName('company-listing-body').item(0).getElementsByClassName('company-listing-more').item(0).getElementsByTagName('a').item(0).href;
                 productDM.logoUrl = product.getElementsByClassName('company-listing-image').item(0).getElementsByTagName('a').item(0).getElementsByTagName('img').item(0).src;
                 productDM.queue = i;
-                productDM.alias = productDM.title.toString().toLowerCase().replace(/ /g, '').replace(/./g, '');
+                productDM.alias = productDM.title.toString().toLowerCase().replace(/ /g, '').replace(".", "-");
                 
                 const responseProduct = await axios.get(productDM.url).catch(err => {
                     console.log(err);
