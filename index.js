@@ -76,7 +76,7 @@ const getDataFromUrlAndSave = async url => {
                 productDM.logoUrl = product.getElementsByClassName('company-listing-image').item(0).getElementsByTagName('a').item(0).getElementsByTagName('img').item(0).src;
                 productDM.queue = i;
                 productDM.alias = productDM.title.toString().toLowerCase().replace(/ /g, '').replace(".", "-");
-                
+
                 const responseProduct = await axios.get(productDM.url).catch(err => {
                     console.log(err);
                     process.exit(1);
@@ -85,7 +85,7 @@ const getDataFromUrlAndSave = async url => {
                 const { document } = (new JSDOM(dataProduct)).window;
 
                 productDM.representation = document.getElementsByClassName('company-page-representation').item(0).textContent;
-                productDM.posterUrl = document.getElementById('company-page-photo').getElementsByClassName('opacity').item(0).style.backgroundImage.replace(/url/g, "").replace(/[()]/g,"").replace(/\"/g, "");
+                productDM.posterUrl = document.getElementById('company-page-photo').getElementsByClassName('opacity').item(0).style.backgroundImage.replace(/url/g, "").replace(/[()]/g, "").replace(/\"/g, "");
 
                 const bodyParagraph = Array.from(document.getElementsByClassName('company-page-body').item(0).getElementsByTagName('p'));
                 productDM.body = "";
@@ -116,13 +116,22 @@ const getDataFromUrlAndSave = async url => {
             });
         });
 
+        const featuredTitles = [];
+        startupstashDM.featuredresources.map(featured => {
+            featuredTitles.push(featured.title);
+        });
+
+
         // create the connection
         const connection = await mysql.createConnection({ host: '35.234.136.67', user: 'root', password: 'c417d53%!', database: 'wunder' });
 
         // delete if category or product delete from web site
+        await connection.query('update product set featured=false where title not in (?)', [featuredTitles]);
         await connection.query('delete from product where title not in (?)', [productTitles]);
         await connection.query('delete p, c from product as p left join category as c on p.categoryId=c.id where c.title not in (?)', [categoryTitles])
         await connection.query('delete from category where title not in (?)', [categoryTitles]);
+        
+
 
         //update and insert category and product
         const databaseCategoryProductPromise = startupstashDM.categories.map(async category => {
@@ -139,7 +148,7 @@ const getDataFromUrlAndSave = async url => {
                 [rows, fields] = await connection.execute('select id from category where title=?', [category.title]);
                 var categoryId = parseInt(rows[0].id);
 
-                [rows, fields] = await connection.execute('select * from product where title=?', [product.title]);
+                [rows, fields] = await connection.execute('select * from product where title=? and featured=false', [product.title]);
 
                 if (rows.length == 0) {
                     await connection.query("insert into product (title, representation, description, body, logoUrl, posterUrl, webUrl, categoryId, queue, alias) values (?, ?, ? ,? ,?, ?, ?, ?, ?, ?)", [product.title, product.representation, product.desc, product.body, product.logoUrl, product.posterUrl, product.webUrl, categoryId, product.queue, product.alias]);
@@ -158,6 +167,15 @@ const getDataFromUrlAndSave = async url => {
         });
 
         await Promise.all(databaseCategoryProductPromise);
+
+        //update featured
+        const databaseFeaturedPromise = startupstashDM.featuredresources.map(async featured => {
+            var [rows, fields] = await connection.query("update product set featured=true where title=?", [featured.title]);
+
+            return rows
+        });
+
+        await Promise.all(databaseFeaturedPromise);
 
         console.log("completed");
         process.exit(1);
